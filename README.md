@@ -54,11 +54,19 @@ targets to:
 - forward calls to actual Linux makefiles `menuconfig`, `defconfig`...
 
 ## Linux Source Code
-
 By default, `make get_source_code` clones the git repository pointed by
-`$KERNEL_REPO_URL` into `$KERNEL_SRC_PATH`
+`$KERNEL_REPO_URL` into `$KERNEL_SRC_PATH`.
 
 But you are free to retreive the whatever linux source code base you want,
 wherever you want, as long as you put it in a directory pointed by
 `$KERNEL_SRC_PATH` variable in `kernel.mk`.
+
+## macOS Host
+Since macOS default filesystem is not case-sensitive and the kernel repository
+requires that, the easiest way is to create a dmg file with the right format:
+
+- Open Disk Utility
+- File > New Image > Blank Image
+- Select Mac OS Extended (Case-sensitive, Journaled)
+- Mount the dmg in macOS
 

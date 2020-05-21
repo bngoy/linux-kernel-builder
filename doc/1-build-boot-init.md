@@ -77,15 +77,6 @@ Building a Linux system requires the following components:
 4. command line utilities, e.g busybox
 5. compiler toolchain, e.g gcc, make, bash.
 
-#### macOS host
-Since macOS default filesystem is not case-sensitive and the kernel repository
-requires that, the easiest way is to create a dmg file with the right format:
-
-- Open Disk Utility
-- File > New Image > Blank Image
-- Select Mac OS Extended (Case-sensitive, Journaled)
-- Mount the dmg in macOS
-
 ### Practical
 Along the document we will be using **linux-kernel-builder** to build a linux
 system. Linux-kernel-builder uses [docker container](../Dockerfile) technology
