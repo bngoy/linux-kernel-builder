@@ -20,13 +20,15 @@ RUN apt-get update               \
     binutils-arm-linux-gnueabihf \
     gcc-arm-linux-gnueabihf      \
     cpio                         \
+    ccache                       \
  && apt-get clean                \
  && rm -rf /var/lib/apt/lists/*
 
-# Fetch the kernel
+# Default environment variable that should have already been be set in kernel.mk
 ENV CCACHE_DIR=/ccache        \
     SRC_DIR=/src              \
-    DIST_DIR=/dist
+    DIST_DIR=/dist            \
+    KERNEL_CONFIG_FILE=/tmp/.config
 
 RUN mkdir -p ${CCACHE_DIR}
 

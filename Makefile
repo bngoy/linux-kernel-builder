@@ -62,7 +62,7 @@ $(KERNEL_SRC_PATH):
 build_builder: $(BUILDER_BUILD_DIR) $(BUILDER_BUILD_DOCKERFILE)
 	$(DOCKER) build -t $(BUILDER_IMAGE) $(BUILDER_BUILD_DIR)
 
-$(BUILDER_BUILD_DIR):
+$(BUILDER_CCACHE_DIR) $(BUILDER_BUILD_DIR):
 	$(MKDIR) -p $@
 
 # Move Dockerfile into a dedicated build directory to avoid sending giga bytes
@@ -89,13 +89,13 @@ shell menuconfig $(KERNEL_ARCH)_defconfig:: local_config
 
 build_kernel: build_$(KERNEL_ARCH)
 
-build_$(KERNEL_ARCH): local_config
+build_$(KERNEL_ARCH): local_config $(BUILDER_CCACHE_DIR)
 	$(DOCKER) run -it -h $(BUILDER_IMAGE) $(BUILDER_ENV) $(BUILDER_VOLUMES) \
 		$(BUILDER_IMAGE) 'make -f builder.mk enter bzImage leave'
 
 local_config: $(BUILDER_LINUX_CONFIG_FILE)
 
-$(KERNEL_CONFIG_FILE):
+$(BUILDER_LINUX_CONFIG_FILE):
 	$(Q)$(ECHO) "Linux kernel config file: '$@' is missing."
 	$(Q)exit 1
 

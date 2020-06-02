@@ -10,24 +10,34 @@ KERNEL_VERSION  ?= 4.10.8
 KERNEL_FULL     ?= $(KERNEL_NAME)-$(KERNEL_CONFIG)-$(KERNEL_ARCH)-$(KERNEL_VERSION)
 KERNEL_DIST		?= $(PWD)/dist/$(KERNEL_FULL)
 KERNEL_IMAGE 	?= $(KERNEL_DIST)/bzImage
+KERNEL_CONFIG_FILE ?= /tmp/.config
+KERNEL_CROSS_COMPILE=ccache x86_64-linux-gnu-
 ROOTFS   		?= $(PWD)/root.cpio.gz
 
 #########################
 # Builder configuration #
 #########################
-BUILDER_LINUX_SRC_PATH=/src
-BUILDER_LINUX_DIST_PATH=/dist
+BUILDER_SRC_PATH_IN_LINUX=/src
+BUILDER_DIST_PATH_IN_LINUX=/dist
+BUILDER_CCACHE_PATH_IN_LINUX=/ccache
 BUILDER_LINUX_CONFIG_FILE=$(BUILDER_CONFIGS_DIR)/$(KERNEL_ARCH)/$(KERNEL_VERSION)-$(KERNEL_CONFIG)/.config
 
 # Export ARCH in builder environment to pre-select architecture for linux make
 # commands
-BUILDER_ENV=	-e ARCH=$(KERNEL_ARCH) 					\
-				-e KERNEL_ARCH=$(KERNEL_ARCH) 			\
+BUILDER_ENV=	-e ARCH=$(KERNEL_ARCH) 													\
+							-e KERNEL_ARCH=$(KERNEL_ARCH)   								\
+							-e CROSS_COMPILE="$(KERNEL_CROSS_COMPILE)"   		  \
+							-e SRC_DIR=$(BUILDER_SRC_PATH_IN_LINUX) 				\
+							-e DIST_DIR=$(BUILDER_DIST_PATH_IN_LINUX) 			\
+							-e CCACHE_DIR=$(BUILDER_CCACHE_PATH_IN_LINUX) 	\
+							-e KERNEL_CONFIG_FILE=$(KERNEL_CONFIG_FILE) 		\
 
-BUILDER_VOLUMES= -v $(PWD)/builder.mk:$(BUILDER_LINUX_SRC_PATH)/builder.mk:ro \
-				 -v $(BUILDER_LINUX_CONFIG_FILE):/tmp/.config	  			  \
-				 -v $(KERNEL_SRC_PATH):$(BUILDER_LINUX_SRC_PATH) 	     	  \
-				 -v $(KERNEL_DIST):$(BUILDER_LINUX_DIST_PATH)		 		  \
-				 -v $(PWD)/building:$(BUILDER_LINUX_SRC_PATH)/building/
+
+BUILDER_VOLUMES= -v $(PWD)/builder.mk:$(BUILDER_SRC_PATH_IN_LINUX)/builder.mk:ro 	\
+				 -v $(BUILDER_LINUX_CONFIG_FILE):$(KERNEL_CONFIG_FILE)	  			  			 	\
+				 -v $(KERNEL_SRC_PATH):$(BUILDER_SRC_PATH_IN_LINUX) 	     	  						\
+				 -v $(KERNEL_DIST):$(BUILDER_DIST_PATH_IN_LINUX)		 		  								\
+				 -v $(BUILDER_CCACHE_DIR):$(BUILDER_CCACHE_PATH_IN_LINUX)		 		  		  	\
+				 -v $(PWD)/building:$(BUILDER_SRC_PATH_IN_LINUX)/building/
 
 
