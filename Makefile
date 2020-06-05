@@ -83,7 +83,7 @@ shell_exec::
 defconfig: $(KERNEL_ARCH)_defconfig
 
 # '::' force call
-shell menuconfig $(KERNEL_ARCH)_defconfig:: local_config
+shell rootfs menuconfig $(KERNEL_ARCH)_defconfig:: local_config
 	$(DOCKER) run -it -h $(BUILDER_IMAGE) $(BUILDER_ENV) $(BUILDER_VOLUMES) \
 		$(BUILDER_IMAGE) 'make -f builder.mk enter $@ leave'
 
@@ -99,23 +99,11 @@ $(BUILDER_LINUX_CONFIG_FILE):
 	$(Q)$(ECHO) "Linux kernel config file: '$@' is missing."
 	$(Q)exit 1
 
-hello::
-	$(DOCKER) run -it $(BUILDER_ENV) $(BUILDER_VOLUMES) $(BUILDER_IMAGE) \
-		'make -f builder.mk enter $@ leave'
-	$(Q)# -nographic : no 'pop-up' window, run qemu inside terminal
-	$(Q)# -no-reboot : exit qemu on guest system reboot
-	$(Q)# -kernel : kernel image to boot
-	$(Q)# -initrd : initramfs to load
-	$(Q)# -append : give linux kernel cli arguments
-	$(Q)# 'panic=1' : reboot on kernel panic
-	$(Q)# 'console=ttyS0' : use qemu's ttyS0 device as console
-	$(QEMU_x86_64) -nographic -no-reboot -kernel $(KERNEL_DIST)/bzImage \
-		-initrd building/root.cpio.gz -append "panic=1 console=ttyS0"
+run::
+	$(RUN)
 
-hello_debug::
-	$(QEMU_x86_64) -s -S -nographic -no-reboot -kernel $(KERNEL_DIST)/bzImage \
-		-initrd building/root.cpio.gz -append "panic=1 console=ttyS0 nokaslr" &
+debug::
+	$(DEBUG)
 
 distclean:
 	$(RM) -rf $(KERNEL_SRC_PATH) $(KERNEL_DIST) $(BUILDER_LATEST_CONFIG_FILE)
-

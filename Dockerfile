@@ -17,18 +17,19 @@ RUN apt-get update               \
     libssl-dev                   \
     libncurses-dev               \
     libelf-dev                   \
-    binutils-arm-linux-gnueabihf \
-    gcc-arm-linux-gnueabihf      \
     cpio                         \
     ccache                       \
+    wget                         \
  && apt-get clean                \
  && rm -rf /var/lib/apt/lists/*
 
 # Default environment variable that should have already been be set in kernel.mk
-ENV CCACHE_DIR=/ccache        \
-    SRC_DIR=/src              \
-    DIST_DIR=/dist            \
-    KERNEL_CONFIG_FILE=/tmp/.config
+ENV CCACHE_DIR=/ccache          \
+    SRC_DIR=/src                \
+    KERNEL_SRC_DIR=/src/kernel  \
+    ROOTFS_SRC_DIR=/src/rootfs  \
+    DIST_DIR=/dist              \
+    EXTERNAL_KERNEL_CONFIG_FILE=/tmp/.config
 
 RUN mkdir -p ${CCACHE_DIR}
 
