@@ -4,6 +4,7 @@ RM=rm
 CP=cp
 MKDIR=mkdir
 CAT=cat
+TOUCH=touch
 SED=sed
 AWK=awk
 GIT=git

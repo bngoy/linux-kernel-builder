@@ -93,10 +93,20 @@ build_$(KERNEL_ARCH): local_config $(BUILDER_CCACHE_DIR)
 	$(DOCKER) run -it -h $(BUILDER_IMAGE) $(BUILDER_ENV) $(BUILDER_VOLUMES) \
 		$(BUILDER_IMAGE) 'make -f builder.mk enter bzImage leave'
 
-local_config: $(BUILDER_LINUX_CONFIG_FILE)
+local_config: $(BUILDER_LINUX_GENCONFIG_FILE)
 
-$(BUILDER_LINUX_CONFIG_FILE):
-	$(Q)$(ECHO) "Linux kernel config file: '$@' is missing."
+config:: $(BUILDER_LINUX_GENCONFIG_FILE)
+
+$(BUILDER_LINUX_GENCONFIG_FILE): $(BUILDER_LINUX_KCONFIG_FILE)
+	$(Q)# Create an empty .config file to avoid docker to create an empty
+	$(Q)# directory when mounting non existing file
+	$(Q)$(TOUCH) $(BUILDER_LINUX_GENCONFIG_FILE)
+	$(DOCKER) run -it -h $(BUILDER_IMAGE) $(BUILDER_ENV) $(BUILDER_VOLUMES) \
+		$(BUILDER_IMAGE) 'make -f builder.mk allnoconfig leave'
+	$(Q)exit 1
+
+$(BUILDER_LINUX_KCONFIG_FILE):
+	$(Q)$(ECHO) "Linux kernel configuration file: No such file '$@'."
 	$(Q)exit 1
 
 run::

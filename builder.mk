@@ -7,9 +7,19 @@ MKDIR=mkdir
 CD=cd
 CP=cp
 
-ifeq ($(EXTERNAL_KERNEL_CONFIG_FILE),)
-  $(error $$EXTERNAL_KERNEL_CONFIG_FILE is not defined.)
-  $(error Make $$EXTERNAL_KERNEL_CONFIG_FILE point to the kernel configuration file (see make *config).)
+ifeq ($(EXTERNAL_KERNEL_GENCONFIG_FILE),)
+  $(error $$EXTERNAL_KERNEL_GENCONFIG_FILE is not defined.)
+  $(error Make $$EXTERNAL_KERNEL_GENCONFIG_FILE point to the kernel configuration file (see make *config).)
+endif
+
+ifneq (allnoconfig, $(firstword $(MAKECMDGOALS)))
+  ifeq ($(KERNEL_KCONFIG_FILE),)
+    $(error "Undefined KERNEL_KCONFIG_FILE variable.")
+  else
+    ifeq (,$(wildcard $(KERNEL_KCONFIG_FILE)))
+      $(error "Kernel configuration file is missing: No such file '$(KERNEL_KCONFIG_FILE)'.")
+    endif
+  endif
 endif
 
 #############
@@ -19,7 +29,7 @@ Q=@
 J=-j $(shell nproc)
 ROOTFS=$(DIST_DIR)/root.cpio.gz
 ROOTFS_BUILD_DIR=$(ROOTFS_SRC_DIR)/build
-KERNEL_CONFIG_FILE=$(KERNEL_SRC_DIR)/.config
+KERNEL_GENCONFIG_FILE=$(KERNEL_SRC_DIR)/.config
 
 all:
 	$(Q)$(ECHO) "This Makefile is used inside container"
@@ -29,15 +39,18 @@ all:
 enter: container_config
 	$(Q)# import the build configuration that has been mounted in /tmp from outside
 	$(Q)# the container (see BUILDER_VOLUMES variable)
-	$(Q)$(CP) $(EXTERNAL_KERNEL_CONFIG_FILE) $(KERNEL_CONFIG_FILE)
+	$(Q)$(CP) $(EXTERNAL_KERNEL_GENCONFIG_FILE) $(KERNEL_GENCONFIG_FILE)
 
 # export_config
 leave:
 	$(Q)# export the latest build configuration outside the container
-	$(Q)$(CP) $(KERNEL_CONFIG_FILE) $(EXTERNAL_KERNEL_CONFIG_FILE)
+	$(Q)$(CP) $(KERNEL_GENCONFIG_FILE) $(EXTERNAL_KERNEL_GENCONFIG_FILE)
 
 menuconfig $(KERNEL_ARCH)_defconfig:
-	$(MAKE) $(J) $@
+	$(MAKE) -C $(KERNEL_SRC_DIR) $(J) $@
+
+allnoconfig:
+	$(MAKE) -C $(KERNEL_SRC_DIR) $(J) $@ KCONFIG_ALLCONFIG=$(KERNEL_KCONFIG_FILE)
 
 shell:
 	$(Q)bash
@@ -47,11 +60,11 @@ bzImage:
 	$(CP) $(KERNEL_SRC_DIR)/arch/$(KERNEL_ARCH)/boot/bzImage $(DIST_DIR)
 	$(CP) $(KERNEL_SRC_DIR)/vmlinux $(DIST_DIR)
 
-container_config: $(EXTERNAL_KERNEL_CONFIG_FILE)
+container_config: $(EXTERNAL_KERNEL_GENCONFIG_FILE)
 
-$(EXTERNAL_KERNEL_CONFIG_FILE):
+$(EXTERNAL_KERNEL_GENCONFIG_FILE):
 	$(Q)$(ECHO) "Linux kernel config file: '$@' is missing."
-	$(Q)$(ECHO) "See $$BUILDER_VOLUMES and check $(EXTERNAL_KERNEL_CONFIG_FILE) is mounted."
+	$(Q)$(ECHO) "See $$BUILDER_VOLUMES and check $(EXTERNAL_KERNEL_GENCONFIG_FILE) is mounted."
 	$(Q)exit 1
 
 rootfs: $(ROOTFS)

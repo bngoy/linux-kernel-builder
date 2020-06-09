@@ -16,7 +16,7 @@ whole source code (giga bytes...) into the container build context.
 
 ## TL;TR
 Build an already existing configuration:
-1. `make help` 
+1. `make help`
 2. `make KCFG=configs/<arch> info` where `<arch>` is a subdirectory of
    [config](config)
 3. `make get_source_code` to get Linux source code
@@ -41,16 +41,18 @@ In this file, use `BUILDER_ENV` to define specific environment variables in
 your builder environment, e.g `ARCH`, `CROSS_COMPILE`...
 
 ### Linux configuration
-`.config` contains the Linux configuration to build. This file is initially
-generated from a `make menuconfig` or `make defconfig` commands. Its location
-is defined by `$KERNEL_LINUX_CONFIG_FILE` in `$KCFG/kernel.mk`
+`kconfig` file contains the Linux configuration to build. *lkb* uses this file
+to run `make allnoconfig KCONFIG_ALLCONFIG=<kconfig>`. The resulting `.config`
+file is located near the `kconfig` file. In `$KCFG/kernel.mk`, see 
+`$BUILDER_LINUX_KCONFIG_FILE` and `$BUILDER_LINUX_GENCONFIG_FILE` variables
+for location definitions.
 
 ### builder makefile
 `builder.mk` is used ONLY INSIDE the *builder* container. It includes make
 targets to: 
-- Log into the *builder*
-- import/export Linux kernel configurations (`.config`) inside/outside the
-  container
+- log into the *builder*
+- import/export generated Linux kernel configurations (`.config`)
+  inside/outside the container
 - forward calls to actual Linux makefiles `menuconfig`, `defconfig`...
 
 ## Linux Source Code
