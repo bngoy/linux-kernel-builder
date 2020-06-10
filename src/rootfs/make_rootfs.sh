@@ -159,6 +159,7 @@ then
   # Don't allow deferred initialization to crap messages over the shell prompt
   echo 3 3 > /proc/sys/kernel/printk
   # Setup networking for QEMU (needs /proc)
+  # No DHCP client need to set address manually
   ifconfig eth0 10.0.2.15
   route add default gw 10.0.2.2
   [ "$(date +%s)" -lt 1000 ] && rdate 10.0.2.2 # or time-b.nist.gov
@@ -203,7 +204,7 @@ cd "$ROOTDIR"/usr/sbin
 $LN -s /usr/sbin/toybox oneit
 cd $BACK
 
-[ -f $DOWNLOADDIR/busybox-$ARCH  ] || $WGET -O $DOWNLOADDIR/busybox-$ARCH https://www.busybox.net/downloads/binaries/1.31.0-defconfig-multiarch-musl/busybox-$ARCH
+[ -f $DOWNLOADDIR/busybox-$ARCH ] || $WGET -O $DOWNLOADDIR/busybox-$ARCH https://www.busybox.net/downloads/binaries/1.31.0-defconfig-multiarch-musl/busybox-$ARCH
 $CP $DOWNLOADDIR/busybox-$ARCH "$ROOTDIR"/usr/bin
 $CHMOD +x "$ROOTDIR"/usr/bin/busybox-$ARCH
 $LN -s busybox-$ARCH "$ROOTDIR"/usr/bin/busybox

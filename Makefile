@@ -115,5 +115,17 @@ run::
 debug::
 	$(DEBUG)
 
+run_share: $(BUILDER_SHARE_DIR)
+	$(Q)$(ECHO) "Sharing '$(BUILDER_SHARE_DIR)'"
+	$(DOCKER) run $(BUILDER_SHARE_FLAGS) $(BUILDER_SHARE_ENV) \
+		$(BUILDER_SHARE_VOLUMES) $(BUILDER_SHARE_IMAGE) 
+
+$(BUILDER_SHARE_DIR):
+	$(Q)$(MKDIR) -p $@
+
+stop_share:
+	$(Q)$(DOCKER) kill $(BUILDER_SHARE_NAME)
+	$(Q)$(DOCKER) rm $(BUILDER_SHARE_NAME)
+
 distclean:
 	$(RM) -rf $(KERNEL_SRC_PATH) $(KERNEL_DIST) $(BUILDER_LATEST_CONFIG_FILE)

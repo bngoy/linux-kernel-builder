@@ -72,3 +72,19 @@ requires that, the easiest way is to create a dmg file with the right format:
 - Select Mac OS Extended (Case-sensitive, Journaled)
 - Mount the dmg in macOS
 
+By default in Docker, the directory /Volumes is shared with the virtual
+machines, so normally there is nothing to do for that. To check, on the Docker
+icon, select Preferences, File Sharing, and /Volumes should be in the list.
+
+## Host/Target Sharing
+A `make run_share` target exists to share a directory between the host and the
+target Linux using NFS. It starts a [docker
+container](https://hub.docker.com/r/itsthenetwork/nfs-server-alpine) on host
+side that serve an NFS server. If your target Linux is compiled with NFS
+modules then you will be able to mount the NFS share using:
+
+`mkdir /nfs && mount -overs=4 <HOST_ID>:/ /nfs`
+
+Note: On macOS you need to stop the nfsd service first: `sudo nfsd stop`.
+Note: If the NFS server is already running, run `make stop_share` to stop it.
+
