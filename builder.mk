@@ -4,6 +4,7 @@
 MAKE=make
 ECHO=echo
 MKDIR=mkdir
+INSTALL=install
 CD=cd
 CP=cp
 
@@ -76,4 +77,5 @@ $(ROOTFS):
 $(ROOTFS_BUILD_DIR):
 	$(Q)$(MKDIR) -p $@
 
-
+bin_%:
+	$(Q)$(MAKE) -C $(BIN_SRC_DIR)/$* install

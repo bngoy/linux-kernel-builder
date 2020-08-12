@@ -88,3 +88,12 @@ modules then you will be able to mount the NFS share using:
 Note: On macOS you need to stop the nfsd service first: `sudo nfsd stop`.
 Note: If the NFS server is already running, run `make stop_share` to stop it.
 
+Default sharing directory  is `./share`, see `BUILDER_SHARE_DIR` variable in
+[env.mk](env.mk).
+
+## External Binaries
+`lkb` allows to build external binaries and copy them into the `share`
+directory by calling `make bin_<DIR>`. This command looks for a
+`src/binaries/<DIR>` directory and calls `make install` using the **builder**
+environment. Then it copies `src/binaries/<DIR>/dist/*` within `share/bin`.
+

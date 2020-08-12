@@ -10,6 +10,7 @@ AWK=awk
 GIT=git
 GDB=gdb
 DOCKER=docker
+INSTALL=install
 QEMU_x86_64=qemu-system-x86_64
 BUILD_DIR=$(PWD)/build
 Q=@

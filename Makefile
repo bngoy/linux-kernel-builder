@@ -129,3 +129,10 @@ stop_share:
 
 distclean:
 	$(RM) -rf $(KERNEL_SRC_PATH) $(KERNEL_DIST) $(BUILDER_LATEST_CONFIG_FILE)
+
+bin_%:
+	$(DOCKER) run -it -h $(BUILDER_IMAGE) $(BUILDER_ENV) $(BUILDER_VOLUMES) \
+		$(BUILDER_IMAGE) 'make -f builder.mk bin_$*'
+	$(INSTALL) -d $(BUILDER_SHARE_DIR)/bin/
+	$(INSTALL) $(BIN_SRC_PATH)/$*/dist/* $(BUILDER_SHARE_DIR)/bin/
+
