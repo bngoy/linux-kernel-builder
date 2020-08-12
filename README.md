@@ -77,8 +77,8 @@ machines, so normally there is nothing to do for that. To check, on the Docker
 icon, select Preferences, File Sharing, and /Volumes should be in the list.
 
 ## Host/Target Sharing
-A `make run_share` target exists to share a directory between the host and the
-target Linux using NFS. It starts a [docker
+A `make start_share` target exists to share a directory between the host and
+the target Linux using NFS. It starts a [docker
 container](https://hub.docker.com/r/itsthenetwork/nfs-server-alpine) on host
 side that serve an NFS server. If your target Linux is compiled with NFS
 modules then you will be able to mount the NFS share using:

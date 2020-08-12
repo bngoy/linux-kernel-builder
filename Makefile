@@ -115,7 +115,7 @@ run::
 debug::
 	$(DEBUG)
 
-run_share: $(BUILDER_SHARE_DIR)
+start_share: $(BUILDER_SHARE_DIR)
 	$(Q)$(ECHO) "Sharing '$(BUILDER_SHARE_DIR)'"
 	$(DOCKER) run $(BUILDER_SHARE_FLAGS) $(BUILDER_SHARE_ENV) \
 		$(BUILDER_SHARE_VOLUMES) $(BUILDER_SHARE_IMAGE) 
