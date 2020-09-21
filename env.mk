@@ -24,7 +24,7 @@ BUILDER_BUILD_DIR=$(BUILD_DIR)/builder
 BUILDER_CCACHE_DIR=$(PWD)/ccache
 BUILDER_BUILD_DOCKERFILE=$(BUILDER_BUILD_DIR)/Dockerfile
 BUILDER_CONFIGS_DIR=$(PWD)/configs
-BUILDER_LATEST_CONFIG_FILE=$(PWD)/.latest
+BUILDER_LATEST_CONFIG_FILE=$(PWD)/.kcfg
 # variables for share point between a runnning linux and the host
 BUILDER_SHARE_NAME=linux-kernel-builder-share
 BUILDER_SHARE_DIR=$(PWD)/share

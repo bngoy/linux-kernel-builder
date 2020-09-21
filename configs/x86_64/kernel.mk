@@ -73,3 +73,4 @@ RUN=$(QEMU_x86_64) -nographic -no-reboot -kernel $(KERNEL_DIST)/bzImage \
 # TODO -S ?
 DEBUG=$(QEMU_x86_64) -s -S -nographic -no-reboot -kernel $(KERNEL_DIST)/bzImage \
 		-initrd $(KERNEL_DIST)/root.cpio.gz -append "panic=1 console=ttyS0 nokaslr" &
+

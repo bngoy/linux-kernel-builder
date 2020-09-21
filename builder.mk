@@ -58,7 +58,7 @@ shell:
 
 bzImage:
 	$(MAKE) -C $(KERNEL_SRC_DIR) $(J) bzImage
-	$(CP) $(KERNEL_SRC_DIR)/arch/$(KERNEL_ARCH)/boot/bzImage $(DIST_DIR)
+	$(CP) $(KERNEL_SRC_DIR)/arch/$(KERNEL_ARCH)/boot/bzImage $(DIST_DIR)-$(KERNAL_NAME)
 	$(CP) $(KERNEL_SRC_DIR)/vmlinux $(DIST_DIR)
 
 container_config: $(EXTERNAL_KERNEL_GENCONFIG_FILE)
